@@ -1,12 +1,25 @@
-from BeautifulSoup import BeautifulSoup
-import urllib
-import re
+__author__ = ("Dylan Lloyd <dylan@psu.edu>")
+__license__ = "BSD"
+
+# SETTINGS
 
 USER = 'alphabethos'
+# END OF SETTINGS
+
+import urllib
+from BeautifulSoup import BeautifulSoup
 
 def fetch_stations(user):
-    tokens = ['0081d3c8e037f4c32a44f01b1701dd31466957fc96e4da2e', 'db592464bbca03e7664b1093336f121ce8c7587b2172781c']
-    return tokens
+    stations = []
+    page = urllib.urlopen('http://www.pandora.com/favorites/profile_tablerows_station.vm?webname=' + USER)
+    page = BeautifulSoup(page)
+    table = page.findAll('div', attrs={'class':'station_table_row'})
+    for row in table:
+        if row.find('a'):
+            for attr, value in row.find('a').attrs:
+                if attr == 'href':
+                    stations.append(value[10:])
+    return stations
 
 def fetch_tracks(stations):
     for station in stations:
@@ -34,4 +47,3 @@ def main():
 
 if __name__ ==  "__main__":
     main()
-
