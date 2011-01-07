@@ -27,6 +27,7 @@ def fetch_tracks(stations):
         page = BeautifulSoup(page)
         titles = []
         artists = []
+        search_urls = []
         for span in page.findAll('span', attrs={'class':'track_title'}):
             for attr, value in span.attrs:
                 if attr == 'tracktitle':
@@ -36,14 +37,27 @@ def fetch_tracks(stations):
         if len(titles) == len(artists):
             i = 0
             for title in titles:
-                print '<a href=\'http://youtube.com/results?search_query=' + urllib.quote_plus(title + ' ' + artists[i]) + '\'>' + title + '</a> by', artists[i], '<br>'
+                search_url = 'http://yt.com/results?search_query=' + urllib.quote_plus(title + ' ' + artists[i])
+                search_urls.append(search_url)
+                print '<a href=\'' + search_url +'\'>' + title + '</a> by', artists[i], '<br>'
                 i += 1
         else:
-            print 'parsing error'
+           pass  ## ERROR
+    return search_urls
+
+def fetch_videos(search_urls):
+    for url in search_urls:
+        page = urllib.urlopen(url)
+        page = BeautifulSoup(page)
+        result = page.find(attrs={'class':'yt-video-box'})
+        print result
+        for attr, value in result.contents[1]:
+            print value
 
 def main():
     stations = fetch_stations(USER)
-    fetch_tracks(stations)
+    search_urls = fetch_tracks(stations)
+    fetch_videos(search_urls)
 
 if __name__ ==  "__main__":
     main()
