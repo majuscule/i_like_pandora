@@ -1,5 +1,8 @@
 This script searches for each of your liked pandora songs and downloads the first YouTube result for "Title Artist" (some music is not avaiblable).
 
+Your Pandora listening activity must be public for this script to work. You can edit your privacy settings here:
+http://www.pandora.com/privacysettings
+
 This script allows you to quickly come back to all the songs you've forgotten you loved. A good way to keep up to date with your Pandora favorites is to add this script into cron and have it run daily. Remember to edit the settings in the first part of the script.
 
 You can edit your crontab with the command "crontab -e". When using this script via cron, a display must be specified to send the notifications to. Here is an example:
