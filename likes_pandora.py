@@ -23,6 +23,7 @@ import shlex, subprocess
 import re
 
 def fetch_stations(user):
+    """ This takes a pandora username and returns the a list of the station tokens that the user is subscribed to. """
     stations = []
     page = urllib.urlopen('http://www.pandora.com/favorites/profile_tablerows_station.vm?webname=' + USER)
     page = BeautifulSoup(page)
@@ -35,6 +36,9 @@ def fetch_stations(user):
     return stations
 
 def fetch_tracks(stations):
+    """ Takes a list of station tokens and returns a list of youtube search urls.
+        What this should really do is just return the Title + Artist strings.
+    """
     search_urls = []
     for station in stations:
         page = urllib.urlopen('http://www.pandora.com/favorites/station_tablerows_thumb_up.vm?token=' + station + '&sort_col=thumbsUpDate')
@@ -58,6 +62,9 @@ def fetch_tracks(stations):
     return search_urls
 
 def fetch_search_video_ids(search_urls):
+    """ This takes a list of youtube search urls and tries to find the first result. It returns a list of youtube video ids.
+        It really should take a list of ids instead.
+    """
     video_list = []
     for url in search_urls:
         page = urllib.urlopen(url)
@@ -82,7 +89,7 @@ def check_for_existing():
     return videolist
 
 def fetch_videos(videolist):
-    """ Uses subprocess to trigger a download using youtube-dl of the list created earlier. """
+    """ Uses subprocess to trigger a download using youtube-dl of the list created earlier, and triggers notifications if enabled. """
     os.chdir(DIR)
     args = shlex.split(YT_DL + ' ' + YT_OPT)
     if NOTIFICATIONS: regex = re.compile("\[download\] Destination: (.+)")
