@@ -1,0 +1,32 @@
+This script searches for each of your liked pandora songs and downloads the first YouTube result for "Title Artist" (some music is not avaiblable).
+
+This script allows you to quickly come back to all the songs you've forgotten you loved. A good way to keep up to date with your Pandora favorites is to add this script into cron and have it run daily. Remember to edit the settings in the first part of the script.
+
+You can edit your crontab with the command "crontab -e". When using this script via cron, a display must be specified to send the notifications to. Here is an example:
+
+$ crontab -e
+@hourly env DISPLAY=:0 python ~/path/to/likes_pandora.py
+
+Requires youtube-dl to be installed. follow instruction here: 
+http://rg3.github.com/youtube-dl/
+Or use your favorite package-management system to install youtube-dl. Make sure youtube-dl is up to date if there are problems by running 'youtube-dl -U'.
+
+Notifications require Nofify OSD (https://launchpad.net/notify-osd), which ships with Ubuntu.
+
+See http://www.github.com/nospampleasemam/youtube_backup for more information and the latest version.
+
+-------
+LICENSING
+-------
+
+This source (written by Dylan Lloyd <dylan@psu.edu> is subject to the following copyright:
+
+The original source and the derived work contained here is subject to the following license:
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+* Neither the name of Henry Hagnäs nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
