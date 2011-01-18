@@ -77,7 +77,6 @@ def fetch_search_video_ids(search_strings):
         page = urllib.urlopen(search_url)
         page = BeautifulSoup(page)
         result = page.find('div', attrs={'class':'video-main-content'})
-        print result
         if result == None:
             print 'odd feedback for search, could not find div at ', search_url
             continue
