@@ -6,21 +6,22 @@ __license__ = "BSD"
 USER = 'alphabethos'
 DIR = '/home/dylan/pandora/'
 YT_DL = '/usr/bin/youtube-dl' # Path to youtube-dl
-NOTIFICATIONS = True
+NOTIFICATIONS = True # False
 DEFAULT_ICON ='/usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-x-shockwave-flash.png'
 YT_OPT = '--no-progress --ignore-errors --continue --max-quality=22 -o "%(stitle)s---%(id)s.%(ext)s"'
 # END OF SETTINGS
 
+from BeautifulSoup import BeautifulSoup
 import urllib
 import urllib2
-from BeautifulSoup import BeautifulSoup
 import pynotify
 import tempfile
 import string
-import hashlib
-import os
-import shlex, subprocess
-import re
+if NOTIFICATIONS:
+    import hashlib
+    import os
+    import shlex, subprocess
+    import re
 
 def fetch_stations(user):
     """ This takes a pandora username and returns the a list of the station tokens that the user is subscribed to. """
