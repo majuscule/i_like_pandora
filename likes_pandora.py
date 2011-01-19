@@ -6,7 +6,7 @@ __license__ = "BSD"
 
 # SETTINGS
 
-USER = 'alphabethos' # pandora account name http://pandora.com/people<USER>
+USER = 'alphabethos' # pandora account name http://pandora.com/people/<USER>
 DIR = '/home/dylan/pandora/' # where to download the videos - will not be automatically created
 YT_DL = '/usr/bin/youtube-dl' # Path to youtube-dl
 NOTIFICATIONS = True # False
@@ -42,8 +42,7 @@ def fetch_stations(user):
     return stations
 
 def fetch_tracks(stations):
-    """ Takes a list of station tokens and returns a list of youtube search urls.
-        What this should really do is just return the Title + Artist strings.
+    """ Takes a list of station tokens and returns a list of Title + Artist strings.
     """
     search_strings = []
     for station in stations:
@@ -67,9 +66,8 @@ def fetch_tracks(stations):
            pass  ## ERROR
     return search_strings
 
-def fetch_search_video_ids(search_strings):
-    """ This takes a list of youtube search urls and tries to find the first result. It returns a list of youtube video ids.
-        It really should take a list of ids instead.
+def search_youtube(search_strings):
+    """ This takes a list of search strings and tries to find the first result. It returns a list of the youtube video ids of those results.
     """
     video_list = []
     for search_string in search_strings:
@@ -100,14 +98,14 @@ def check_for_existing(video_list):
         i += 1
     return video_list
 
-def fetch_videos(videolist):
+def fetch_videos(video_list):
     """ Uses subprocess to trigger a download using youtube-dl of the list created earlier, and triggers notifications if enabled. """
     os.chdir(DIR)
     args = shlex.split(YT_DL + ' ' + YT_OPT)
     if NOTIFICATIONS: regex = re.compile("\[download\] Destination: (.+)")
-    for item in videolist:
-        if item:
-            thread = subprocess.Popen(args + ["http://youtube.com/watch?v=" + item], stdout=subprocess.PIPE)
+    for video in video_list:
+        if video:
+            thread = subprocess.Popen(args + ["http://youtube.com/watch?v=" + video], stdout=subprocess.PIPE)
             output = thread.stdout.read()
             if NOTIFICATIONS:
                 video_file = regex.findall(output)
@@ -122,7 +120,7 @@ def fetch_videos(videolist):
                 if not os.path.isfile(thumbnail):
                     opener = urllib2.build_opener()
                     try:
-                        page = opener.open('http://img.youtube.com/vi/' + item + '/1.jpg')
+                        page = opener.open('http://img.youtube.com/vi/' + video + '/1.jpg')
                         thumb = page.read()
                         # The thumbnail really should be saved to
                         # ~/.thumbnails/normal (Thumbnail Managing
@@ -148,10 +146,10 @@ def main():
     stations = fetch_stations(USER)
     if len(stations) == 0:
         print 'are you sure your pandora profile is public?'
-    search_urls = fetch_tracks(stations)
-    video_list = fetch_search_video_ids(search_urls)
-    video_list = check_for_existing(video_list)
-    fetch_videos(video_list)
+    search_strings = fetch_tracks(stations)
+    videos = search_youtube(search_strings)
+    videos = check_for_existing(videos)
+    fetch_videos(videos)
 
 if __name__ ==  "__main__":
     main()
