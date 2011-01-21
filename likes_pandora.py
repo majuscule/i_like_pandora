@@ -31,6 +31,7 @@ try:
     NOTIFICATIONS = config.getboolean('settings', 'notifications')
     YT_DL = config.get('settings', 'youtube-dl')
     DEFAULT_ICON = config.get('settings', 'default_icon')
+    YT_OPT = default_options['youtube-dl_options']
 except:
     print 'There is a formatting error in the configuration file at', CONFIG_FILE
     sys.exit()
