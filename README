@@ -1,11 +1,12 @@
-This script searches for each of your liked pandora songs and downloads the first YouTube result for "Title Artist" (some music is not avaiblable).
+This script searches for each of your liked Pandora songs and downloads the first YouTube result for "Title Artist" (some music is not avaiblable).
 
 Your Pandora listening activity must be public for this script to work. You can edit your privacy settings here:
 http://www.pandora.com/privacysettings
 
-This script allows you to quickly come back to all the songs you've forgotten you loved. A good way to keep up to date with your Pandora favorites is to add this script into cron and have it run daily. Remember to edit the settings in the first part of the script.
+Remember to set your username and download directory in a settings file at ~/.i_like_pandora.config. A sample file should be at ./.i_like_pandora.config and available here:
+http://github.com/nospampleasemam/i_like_pandora/
 
-You can edit your crontab with the command "crontab -e". When using this script via cron, a display must be specified to send the notifications to. Here is an example:
+A good way to keep up to date with your Pandora favorites is to add this script into cron and have it run daily. You can edit your crontab with the command "crontab -e". When using this script via cron, a display must be specified to send the notifications to. Here is an example:
 
 $ crontab -e
 @hourly env DISPLAY=:0 python ~/path/to/likes_pandora.py
@@ -26,9 +27,6 @@ See http://www.github.com/nospampleasemam/youtube_backup for more information an
 LICENSING
 -------
 
-This source (written by Dylan Lloyd <dylan@psu.edu> is subject to the following copyright:
-
-The original source and the derived work contained here is subject to the following license:
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
