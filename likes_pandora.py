@@ -4,20 +4,40 @@
 __author__ = ("Dylan Lloyd <dylan@psu.edu>")
 __license__ = "BSD"
 
-# SETTINGS
+default_options = {
+    'notifications' : 'true',
+    # NOTIFICATIONS must be a string due to issues noted here:
+    # http://bugs.python.org/issue974019
+    # ConfigParser.getboolean fails when falling back to the default value
+    # if the value type is bool.
+    'youtube-dl' : '/usr/bin/youtube-dl',
+    'default_icon' : '/usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-x-shockwave-flash.png',
+    'youtube-dl_options' : '--no-progress --ignore-errors --continue --max-quality=22 -o "%(stitle)s---%(id)s.%(ext)s"'
+}
 
-USER = 'alphabethos' # pandora account name http://pandora.com/people/<USER>
-DIR = '/home/dylan/pandora/' # where to download the videos - will not be automatically created
-YT_DL = '/usr/bin/youtube-dl' # Path to youtube-dl
-NOTIFICATIONS = True # False
-DEFAULT_ICON ='/usr/share/icons/gnome/48x48/mimetypes/gnome-mime-application-x-shockwave-flash.png' # for notifications
-YT_OPT = '--no-progress --ignore-errors --continue --max-quality=22 -o "%(stitle)s---%(id)s.%(ext)s"'
-# END OF SETTINGS
+import ConfigParser # This module has been renamed to configparser in python  3.0
+import sys
+import os
+
+CONFIG_FILE= os.path.join(os.path.expanduser('~'), '.i_like_pandora.config')
+config = ConfigParser.ConfigParser(default_options)
+loaded_files = config.read(CONFIG_FILE) # config.read returns an empty array if it fails.
+if len(loaded_files) == 0:
+    print 'Can\'t find a configuration file at', CONFIG_FILE
+    sys.exit()
+try:
+    USER = config.get('settings', 'username')
+    DIR = os.path.expanduser(config.get('settings', 'download_folder'))
+    NOTIFICATIONS = config.getboolean('settings', 'notifications')
+    YT_DL = config.get('settings', 'youtube-dl')
+    DEFAULT_ICON = config.get('settings', 'default_icon')
+except:
+    print 'There is a formatting error in the configuration file at', CONFIG_FILE
+    sys.exit()
 
 from BeautifulSoup import BeautifulSoup
 import urllib
 import urllib2
-import os
 import re
 import copy
 import shlex, subprocess
@@ -63,7 +83,10 @@ def fetch_tracks(stations):
                 search_strings.append(search_string)
                 i += 1
         else:
-           pass  ## ERROR
+            # This would mean something strange has happened: there
+            # aren't the same number of titles and artist names on a
+            # station page.
+            pass
     return search_strings
 
 def search_youtube(search_strings):
@@ -141,11 +164,10 @@ def fetch_videos(video_list):
                     note = pynotify.Notification(title, 'video downloaded', thumbnail)
                 note.show()
 
-
 def main():
     stations = fetch_stations(USER)
     if len(stations) == 0:
-        print 'are you sure your pandora profile is public?'
+        print 'Are you sure your pandora profile is public? Can\'t seem to find any stations listed with your account.'
     search_strings = fetch_tracks(stations)
     videos = search_youtube(search_strings)
     videos = check_for_existing(videos)
