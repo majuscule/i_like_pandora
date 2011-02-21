@@ -36,7 +36,7 @@ except:
     print 'There is a formatting error in the configuration file at', CONFIG_FILE
     sys.exit()
 
-from BeautifulSoup import BeautifulSoup
+from search_classes import pandora_fetch, search_youtube, found_video
 import urllib
 import urllib2
 import re
@@ -48,19 +48,6 @@ if NOTIFICATIONS:
     import hashlib
     import tempfile
     import string
-
-def fetch_stations(user):
-    """ This takes a pandora username and returns the a list of the station tokens that the user is subscribed to. """
-    stations = []
-    page = urllib.urlopen('http://www.pandora.com/favorites/profile_tablerows_station.vm?webname=' + USER)
-    page = BeautifulSoup(page)
-    table = page.findAll('div', attrs={'class':'station_table_row'})
-    for row in table:
-        if row.find('a'):
-            for attr, value in row.find('a').attrs:
-                if attr == 'href':
-                    stations.append(value[10:])
-    return stations
 
 def fetch_tracks(stations):
     """ Takes a list of station tokens and returns a list of Title + Artist strings.
@@ -89,26 +76,6 @@ def fetch_tracks(stations):
             # station page.
             pass
     return search_strings
-
-def search_youtube(search_strings):
-    """ This takes a list of search strings and tries to find the first result. It returns a list of the youtube video ids of those results.
-    """
-    video_list = []
-    for search_string in search_strings:
-        search_url = 'http://youtube.com/results?search_query=' + urllib.quote_plus(search_string)
-        page = urllib.urlopen(search_url)
-        page = BeautifulSoup(page)
-        result = page.find('div', attrs={'class':'video-main-content'})
-        if result == None:
-            print 'odd feedback for search, could not find div at ', search_url
-            continue
-        for attr, value in result.attrs:
-            if attr == 'id' and len(value[19:]) == 11:
-                video_list.append(value[19:])
-            elif attr == 'id':
-                print 'odd feedback for search', search_url, " : ", value[19:]
-    return video_list
-
 
 def check_for_existing(video_list):
     """ Checks the download-folder for existing videos with same id and removes from video_list. """
@@ -166,12 +133,13 @@ def fetch_videos(video_list):
                 note.show()
 
 def main():
-    stations = fetch_stations(USER)
-    if len(stations) == 0:
-        print 'Are you sure your pandora profile is public? Can\'t seem to find any stations listed with your account.'
-    search_strings = fetch_tracks(stations)
-    videos = search_youtube(search_strings)
-    videos = check_for_existing(videos)
+    stations = pandora_fetch(USER)
+    searches = []
+    for title, artist in stations.tracks.iteritems():
+       search = title + " " + artist
+       searches.append(search)
+    videos = search_youtube(searches);
+    videos = check_for_existing(videos.track_ids)
     fetch_videos(videos)
 
 if __name__ ==  "__main__":
