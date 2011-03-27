@@ -2,7 +2,6 @@
 
 from HTMLParser import HTMLParser, HTMLParseError
 import urllib
-from fetch_pandora import pandora_fetch
 
 class pandora_fetch(HTMLParser):
     """ This class should be initiated with a Pandora account username. It exposes a list of tracks `self.tracks` and a dictionary of title->artist pairs `tracks`.
